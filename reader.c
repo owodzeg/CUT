@@ -1,10 +1,11 @@
 #include "reader.h"
+#include "buffer.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
-void* read_proc()
+void* read_proc(void* arg)
 {
     for(;;)
     {
@@ -35,6 +36,17 @@ void* read_proc()
             {
                 core = atoi(cpu+3);
                 printf("cpu: %d, user: %ld, nice: %ld, system: %ld, idle: %ld, iowait: %ld, irq: %ld, softirq: %ld, steal: %ld\n", core, user, nice, system, idle, iowait, irq, softirq, steal);
+            
+                struct CoreData data;
+                data.core_id = core;
+                data.user = user;
+                data.nice = nice;
+                data.system = system;
+                data.idle = idle;
+                data.iowait = iowait;
+                data.irq = irq;
+                data.softirq = softirq;
+                data.steal = steal;
             }
         }
         
