@@ -16,7 +16,9 @@ void* read_proc(void* arg)
         long int user=0, nice=0, system=0, idle=0, iowait=0, irq=0, softirq=0, steal=0;
 
         char head[3];
-        int core = 0;
+        unsigned long core = 0;
+
+        struct CoreData data;
 
         fptr = fopen("/proc/stat", "r");
         
@@ -34,10 +36,9 @@ void* read_proc(void* arg)
             
             if(strcmp("cpu", head) == 0 && strlen(cpu) > 3)
             {
-                core = atoi(cpu+3);
-                printf("cpu: %d, user: %ld, nice: %ld, system: %ld, idle: %ld, iowait: %ld, irq: %ld, softirq: %ld, steal: %ld\n", core, user, nice, system, idle, iowait, irq, softirq, steal);
+                core = strtoul(cpu+3, NULL, 10);
+                printf("cpu: %lu, user: %ld, nice: %ld, system: %ld, idle: %ld, iowait: %ld, irq: %ld, softirq: %ld, steal: %ld\n", core, user, nice, system, idle, iowait, irq, softirq, steal);
 
-                struct CoreData data;
                 data.core_id = core;
                 data.user = user;
                 data.nice = nice;
