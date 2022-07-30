@@ -1,5 +1,5 @@
 CC = clang
-STD = -std=c99
+STD = -std=c11
 DEPS = -pthread
 WARNINGS = -Weverything
 CFLAGS = ${STD} ${DEPS} ${WARNINGS}
