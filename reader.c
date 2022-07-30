@@ -36,7 +36,7 @@ void* read_proc(void* arg)
             {
                 core = atoi(cpu+3);
                 printf("cpu: %d, user: %ld, nice: %ld, system: %ld, idle: %ld, iowait: %ld, irq: %ld, softirq: %ld, steal: %ld\n", core, user, nice, system, idle, iowait, irq, softirq, steal);
-            
+
                 struct CoreData data;
                 data.core_id = core;
                 data.user = user;
@@ -47,6 +47,8 @@ void* read_proc(void* arg)
                 data.irq = irq;
                 data.softirq = softirq;
                 data.steal = steal;
+
+                save_to_buffer(data);
             }
         }
         
