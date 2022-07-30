@@ -10,7 +10,7 @@ void read_proc()
     char line[1024];
 
     char cpu[255];
-    long int user=0, nice=0, system=0, idle=0;
+    long int user=0, nice=0, system=0, idle=0, iowait=0, irq=0, softirq=0, steal=0;
 
     fptr = fopen("/proc/stat", "r");
     
@@ -23,8 +23,8 @@ void read_proc()
     while(fgets(line, 1024, fptr) != NULL) 
     {
         //printf("%s", line);
-        sscanf(line, "%s %ld %ld %ld %ld", cpu, &user, &nice, &system, &idle);
-        printf("cpu: %s, user: %ld, nice: %ld, system: %ld, idle: %ld\n", cpu, user, nice, system, idle);
+        sscanf(line, "%s %ld %ld %ld %ld %ld %ld %ld %ld", cpu, &user, &nice, &system, &idle, &iowait, &irq, &softirq, &steal);
+        printf("cpu: %s, user: %ld, nice: %ld, system: %ld, idle: %ld, iowait: %ld, irq: %ld, softirq: %ld, steal: %ld\n", cpu, user, nice, system, idle, iowait, irq, softirq, steal);
     }
     
     fclose(fptr);
