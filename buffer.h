@@ -10,7 +10,7 @@
 // we differentiate cores so we can calculate per core % usage
 struct CoreData
 {
-    int core_id;
+    unsigned long core_id;
     long int user;
     long int nice;
     long int system;
@@ -22,12 +22,14 @@ struct CoreData
 };
 
 // we keep track of the old core count so we don't do expensive reallocs all the time
-extern int old_cores;
-extern int max_cores;
+extern unsigned long old_cores;
+extern unsigned long max_cores;
 
 // data storage
 extern struct CoreData *cores;
 
 void save_to_buffer(struct CoreData data);
+struct CoreData* load_from_buffer(void);
+unsigned long get_num_cores(void);
 
 #endif
