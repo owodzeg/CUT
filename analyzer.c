@@ -9,7 +9,7 @@ double* averagesStored;
 
 void* process_data(void* arg)
 {
-    unsigned long numcores;
+    long numcores;
     
     struct CoreData* tmp;
 
@@ -27,7 +27,7 @@ void* process_data(void* arg)
 
     double percentage;
 
-    int** percentagesStored; //we store many percentage data to get an average per second
+    double** percentagesStored; //we store many percentage data to get an average per second
 
     int refresh_rate; //how many refreshes per second
 
@@ -35,19 +35,21 @@ void* process_data(void* arg)
 
     struct timespec t;
 
+    (void)arg; //to shut -wunused-parameter warning
+
     refresh_rate = 10;
     numcores = sysconf(_SC_NPROCESSORS_ONLN);
 
-    percentagesStored = malloc(sizeof(int*) * numcores);
+    percentagesStored = malloc(sizeof(int*) * (unsigned long)numcores);
     if(!percentagesStored)
     {
         printf("Unable to allocate memory for percentagesStored\n");
     }
     else
     {
-        for(unsigned long i=0; i<numcores; i++)
+        for(long i=0; i<numcores; i++)
         {
-            percentagesStored[i] = malloc(sizeof(double) * refresh_rate);
+            percentagesStored[i] = malloc(sizeof(double) * (unsigned long)refresh_rate);
 
             if(!percentagesStored[i])
             {
@@ -56,7 +58,7 @@ void* process_data(void* arg)
         }
     }
 
-    for(unsigned long c=0; c<numcores; c++)
+    for(long c=0; c<numcores; c++)
     {
         for(int r=0; r<refresh_rate; r++)
         {
@@ -64,13 +66,13 @@ void* process_data(void* arg)
         }
     }
 
-    averagesStored = malloc(sizeof(double) * numcores);
+    averagesStored = malloc(sizeof(double) * (unsigned long)numcores);
 
     if(old_core_data == NULL)
-        old_core_data = malloc(sizeof(struct CoreData) * numcores);
+        old_core_data = malloc(sizeof(struct CoreData) * (unsigned long)numcores);
 
     if(new_core_data == NULL)
-        new_core_data = malloc(sizeof(struct CoreData) * numcores);
+        new_core_data = malloc(sizeof(struct CoreData) * (unsigned long)numcores);
 
     for(;;)
     {
@@ -78,7 +80,7 @@ void* process_data(void* arg)
         
         if(tmp != NULL)
         {
-            for(unsigned long i=0; i<numcores; i++)
+            for(long i=0; i<numcores; i++)
             {
                 new_core_data[i].core_id = tmp[i].core_id;
                 new_core_data[i].user = tmp[i].user;

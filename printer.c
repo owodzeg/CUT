@@ -9,10 +9,11 @@
 void *print_data(void* arg)
 {
     double* analyzerData;
-    unsigned long numcores;
+    long numcores;
 
     struct timespec t;
 
+    (void)arg; //to shut -wunused-parameter warning
     numcores = sysconf(_SC_NPROCESSORS_ONLN);
 
     //sleep(1);
@@ -26,7 +27,7 @@ void *print_data(void* arg)
 
         if(analyzerData != NULL)
         {
-            for(unsigned long i=0; i<numcores; i++)
+            for(long i=0; i<numcores; i++)
             {
                 move(1+i, 0);
                 clrtoeol();

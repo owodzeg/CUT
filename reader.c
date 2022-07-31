@@ -22,6 +22,8 @@ void* read_proc(void* arg)
         struct CoreData data;
         struct timespec t;
 
+        (void)arg; //to shut -wunused-parameter warning
+
         fptr = fopen("/proc/stat", "r");
         
         if(fptr == NULL)
