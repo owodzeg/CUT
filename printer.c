@@ -4,11 +4,14 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <ncurses.h>
+#include <time.h>
 
 void *print_data(void* arg)
 {
     double* analyzerData;
     unsigned long numcores;
+
+    struct timespec t;
 
     sleep(3);
 
@@ -32,6 +35,9 @@ void *print_data(void* arg)
 
         refresh();
 
-        usleep(100000);
+
+        t.tv_sec = 0;
+        t.tv_nsec = 100000000L;
+        nanosleep(&t, NULL);
     }
 }

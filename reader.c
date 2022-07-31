@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <time.h>
 
 void* read_proc(void* arg)
 {
@@ -19,6 +20,7 @@ void* read_proc(void* arg)
         unsigned long core = 0;
 
         struct CoreData data;
+        struct timespec t;
 
         fptr = fopen("/proc/stat", "r");
         
@@ -55,6 +57,8 @@ void* read_proc(void* arg)
         
         fclose(fptr);
 
-        usleep(1000);
+        t.tv_sec = 0;
+        t.tv_nsec = 1000000L;
+        nanosleep(&t, NULL);
     }
 }

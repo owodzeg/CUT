@@ -1,6 +1,7 @@
 #include "analyzer.h"
 #include <unistd.h>
 #include <stdio.h>
+#include <time.h>
 
 struct CoreData* old_core_data = NULL;
 struct CoreData* new_core_data = NULL;
@@ -31,6 +32,8 @@ void* process_data(void* arg)
     int refresh_rate; //how many refreshes per second
 
     double average;
+
+    struct timespec t;
 
     sleep(2); //wait to make sure we have an appropriate number of cores
 
@@ -148,7 +151,9 @@ void* process_data(void* arg)
             old_core_data[i].steal = new_core_data[i].steal;
         }
 
-        usleep(1000000 / refresh_rate);
+        t.tv_sec = 0;
+        t.tv_nsec = 1000000000L / refresh_rate;
+        nanosleep(&t, NULL);
     }
 }
 
