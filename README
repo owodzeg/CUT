@@ -1,1 +1,10 @@
-WIP
+CPU Usage Tracker
+    Application for calculating average CPU usage
+
+How to build:
+    git clone https://github.com/owodzeg/CUT.git
+    cd CUT
+    make
+    ./main
+
+You may modify Makefile to use a different compiler (clang or gcc)
