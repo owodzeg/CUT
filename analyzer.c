@@ -3,9 +3,10 @@
 #include <stdio.h>
 #include <time.h>
 
-struct CoreData* old_core_data = NULL;
-struct CoreData* new_core_data = NULL;
+struct CoreData* old_core_data;
+struct CoreData* new_core_data;
 double* averagesStored;
+int analyzer_running = 1;
 
 void* process_data(void* arg)
 {
@@ -37,10 +38,15 @@ void* process_data(void* arg)
 
     (void)arg; //to shut -wunused-parameter warning
 
+    old_core_data = NULL;
+    new_core_data = NULL;
+
+    averagesStored = NULL;
+
     refresh_rate = 10;
     numcores = sysconf(_SC_NPROCESSORS_ONLN);
 
-    percentagesStored = malloc(sizeof(int*) * (unsigned long)numcores);
+    percentagesStored = malloc(sizeof(double*) * (unsigned long)numcores);
     if(!percentagesStored)
     {
         printf("Unable to allocate memory for percentagesStored\n");
@@ -157,6 +163,21 @@ void* process_data(void* arg)
         t.tv_sec = 0;
         t.tv_nsec = 1000000000L / refresh_rate;
         nanosleep(&t, NULL);
+
+        if(analyzer_running == 0)
+        {   
+            for(long i=0; i<numcores; i++)
+            {
+                free(percentagesStored[i]);
+            }
+
+            free(percentagesStored);      
+            free(averagesStored);
+            free(old_core_data);
+            free(new_core_data);
+
+            return 0;
+        }
     }
 }
 
@@ -170,4 +191,10 @@ double* retrieve_data()
     {
         return NULL;
     }
+}
+
+void analyzer_exit(void)
+{
+    analyzer_running = 0;
+    return;
 }

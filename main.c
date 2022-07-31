@@ -1,8 +1,19 @@
 #include <stdio.h>
 #include <pthread.h>
+#include <signal.h>
+#include <string.h>
 #include "reader.h"
 #include "analyzer.h"
 #include "printer.h"
+
+static void quit_program(int _)
+{
+	(void)_;
+
+	reader_exit();
+	analyzer_exit();
+	printer_exit();
+}
 
 int main()
 {
@@ -10,6 +21,8 @@ int main()
 	pthread_t analyzer_thread;
 	pthread_t printer_thread;
 	int result;
+
+	signal(SIGINT, quit_program);
 
 	result = pthread_create(&reader_thread, NULL, read_proc, NULL);
 	if(result != 0)
@@ -35,6 +48,8 @@ int main()
 	pthread_join(printer_thread, NULL);
 	pthread_join(reader_thread, NULL);
 	pthread_join(analyzer_thread, NULL);
+
+	printf("All threads have finished execution. Quitting program.\n");
 
 	return 0;
 }

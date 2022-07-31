@@ -1,3 +1,5 @@
 // module for reading cpu data from /proc/stat and transporting it to a data buffer
 
-_Noreturn void* read_proc(void*);
+extern int reader_running;
+void* read_proc(void*);
+void reader_exit(void);
