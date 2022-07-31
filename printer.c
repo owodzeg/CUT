@@ -22,23 +22,28 @@ void *print_data(void* arg)
     for(;;)
     {
         analyzerData = retrieve_data();
-        
         mvprintw(0, 0, "CORE ID    USAGE");
 
-        for(unsigned long i=0; i<numcores; i++)
+        if(analyzerData != NULL)
         {
-            move(1+i, 0);
-            clrtoeol();
+            for(unsigned long i=0; i<numcores; i++)
+            {
+                move(1+i, 0);
+                clrtoeol();
 
-            mvprintw(1+(int)i, 0, "%lu", i);
-            mvprintw(1+(int)i, 11, "%f%%", analyzerData[i]);
+                mvprintw(1+(int)i, 0, "%lu", i);
+                mvprintw(1+(int)i, 11, "%f%%", analyzerData[i]);
+            }
+        }
+        else
+        {
+            mvprintw(1, 0, "Printer thread is waiting for data");
         }
 
         refresh();
 
-
-        t.tv_sec = 0;
-        t.tv_nsec = 100000000L;
+        t.tv_sec = 1;
+        t.tv_nsec = 0;
         nanosleep(&t, NULL);
     }
 }

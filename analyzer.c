@@ -35,8 +35,6 @@ void* process_data(void* arg)
 
     struct timespec t;
 
-    //sleep(1);
-
     refresh_rate = 10;
     numcores = sysconf(_SC_NPROCESSORS_ONLN);
 
@@ -162,5 +160,12 @@ void* process_data(void* arg)
 
 double* retrieve_data()
 {
-    return averagesStored;
+    if(averagesStored != NULL)
+    {
+        return averagesStored;
+    }
+    else
+    {
+        return NULL;
+    }
 }
