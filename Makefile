@@ -1,7 +1,6 @@
 CC = clang
-STD = -std=c11
 DEPS = -pthread
-LIBS = -lncurses
+STD = -std=c11
 
 ifeq (${CC}, gcc)
 	WARNINGS = -Wall -Wextra
@@ -14,7 +13,7 @@ endif
 CFLAGS = ${STD} ${DEPS} ${WARNINGS}
 
 main: main.o reader.o analyzer.o buffer.o printer.o
-	${CC} ${CFLAGS} -o main main.o reader.o analyzer.o buffer.o printer.o ${LIBS}
+	${CC} ${CFLAGS} -o main main.o reader.o analyzer.o buffer.o printer.o
 
 main.o: main.c reader.h buffer.h
 	${CC} ${CFLAGS} -c main.c
