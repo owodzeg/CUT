@@ -2,7 +2,15 @@ CC = clang
 STD = -std=c11
 DEPS = -pthread
 LIBS = -lncurses
-WARNINGS = -Weverything
+
+ifeq (${CC}, gcc)
+	WARNINGS = -Wall -Wextra
+endif
+
+ifeq (${CC}, clang)
+	WARNINGS = -Weverything
+endif
+
 CFLAGS = ${STD} ${DEPS} ${WARNINGS}
 
 main: main.o reader.o analyzer.o buffer.o printer.o
