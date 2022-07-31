@@ -14,6 +14,20 @@ void* process_data(void* arg)
     
     struct CoreData* tmp;
 
+    long int prevIdle;
+    long int curIdle;
+
+    long int prevNonIdle;
+    long int curNonIdle;
+
+    long int prevTotal;
+    long int curTotal;
+
+    long int totalDiff;
+    long int idleDiff;
+
+    double percentage;
+
     if(old_core_data == NULL)
         old_core_data = malloc(sizeof(struct CoreData) * numcores);
 
@@ -37,7 +51,23 @@ void* process_data(void* arg)
             new_core_data[i].steal = tmp[i].steal;
         
             // logic
-            printf("core %lu user %ld vs %ld\n", i+1, new_core_data[i].user, old_core_data[i].user);
+            //printf("core %lu user %ld vs %ld\n", i+1, new_core_data[i].user, old_core_data[i].user);
+
+            prevIdle = old_core_data[i].idle + old_core_data[i].iowait;
+            curIdle = new_core_data[i].idle + new_core_data[i].iowait;
+
+            prevNonIdle = old_core_data[i].user + old_core_data[i].nice + old_core_data[i].system + old_core_data[i].irq + old_core_data[i].softirq + old_core_data[i].steal;
+            curNonIdle = new_core_data[i].user + new_core_data[i].nice + new_core_data[i].system + new_core_data[i].irq + new_core_data[i].softirq + new_core_data[i].steal;
+
+            prevTotal = prevIdle + prevNonIdle;
+            curTotal = curIdle + curNonIdle;
+
+            totalDiff = curTotal - prevTotal;
+            idleDiff = curIdle - prevIdle;
+
+            percentage = (double)(totalDiff - idleDiff) / (double)totalDiff * 100.0;
+
+            printf("CPU core: %lu, usage: %f%%, totald: %ld, idled: %ld\n", i, percentage, totald, idled);
 
             old_core_data[i].core_id = new_core_data[i].core_id;
             old_core_data[i].user = new_core_data[i].user;
