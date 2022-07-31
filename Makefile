@@ -1,11 +1,12 @@
 CC = clang
 STD = -std=c11
 DEPS = -pthread
+LIBS = -lncurses
 WARNINGS = -Weverything
 CFLAGS = ${STD} ${DEPS} ${WARNINGS}
 
-main: main.o reader.o analyzer.o buffer.o
-	${CC} ${CFLAGS} -o main main.o reader.o analyzer.o buffer.o
+main: main.o reader.o analyzer.o buffer.o printer.o
+	${CC} ${CFLAGS} -o main main.o reader.o analyzer.o buffer.o printer.o ${LIBS}
 
 main.o: main.c reader.h buffer.h
 	${CC} ${CFLAGS} -c main.c
@@ -18,6 +19,9 @@ analyzer.o: analyzer.c analyzer.h buffer.h
 
 buffer.o: buffer.c buffer.h
 	${CC} ${CFLAGS} -c buffer.c
+
+printer.o: printer.c printer.h
+	${CC} ${CFLAGS} -c printer.c
 
 clean:
 	rm -rf *.o
