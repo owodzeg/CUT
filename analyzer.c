@@ -35,7 +35,9 @@ void* process_data(void* arg)
 
     struct timespec t;
 
-    sleep(2); //wait to make sure we have an appropriate number of cores
+    t.tv_sec = 0;
+    t.tv_nsec = 500000000L;
+    nanosleep(&t, NULL); // need to wait for reader to get number of cores
 
     refresh_rate = 10;
     numcores = get_num_cores();

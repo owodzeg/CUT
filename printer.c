@@ -13,7 +13,7 @@ void *print_data(void* arg)
 
     struct timespec t;
 
-    sleep(3);
+    sleep(1); //need to wait for reader and analyzer to kick in
 
     initscr();
 
@@ -29,8 +29,8 @@ void *print_data(void* arg)
             move(1+i, 0);
             clrtoeol();
 
-            mvprintw(1+i, 0, "%lu", i);
-            mvprintw(1+i, 11, "%f%%", analyzerData[i]);
+            mvprintw(1+(int)i, 0, "%lu", i);
+            mvprintw(1+(int)i, 11, "%f%%", analyzerData[i]);
         }
 
         refresh();
