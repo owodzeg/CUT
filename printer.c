@@ -26,7 +26,7 @@ void *print_data(void* arg)
 
         if(analyzerData != NULL)
         {
-            printf("\e[1;1H\e[2J");
+            printf("\033[1;1H\033[2J"); //clear the screen for aesthetics
             printf("CORE ID\t\tUSAGE\n");
             for(long i=0; i<numcores; i++)
             {
