@@ -37,7 +37,7 @@ void* read_proc(void* arg)
             if(strcmp("cpu", head) == 0 && strlen(cpu) > 3)
             {
                 core = strtoul(cpu+3, NULL, 10);
-                printf("cpu: %lu, user: %ld, nice: %ld, system: %ld, idle: %ld, iowait: %ld, irq: %ld, softirq: %ld, steal: %ld\n", core, user, nice, system, idle, iowait, irq, softirq, steal);
+                //printf("cpu: %lu, user: %ld, nice: %ld, system: %ld, idle: %ld, iowait: %ld, irq: %ld, softirq: %ld, steal: %ld\n", core, user, nice, system, idle, iowait, irq, softirq, steal);
 
                 data.core_id = core;
                 data.user = user;
@@ -55,6 +55,6 @@ void* read_proc(void* arg)
         
         fclose(fptr);
 
-        sleep(1);
+        usleep(1000);
     }
 }
