@@ -9,24 +9,27 @@ int main()
 	pthread_t reader_thread;
 	pthread_t analyzer_thread;
 	pthread_t printer_thread;
-	int result = 0;
+	int result;
 
 	result = pthread_create(&reader_thread, NULL, read_proc, NULL);
 	if(result != 0)
 	{
-		printf("Couldn't create thread\n");
+		printf("Couldn't create reader thread\n");
+		return 1;
 	}
 
 	result = pthread_create(&printer_thread, NULL, print_data, NULL);
 	if(result != 0)
 	{
-		printf("Couldn't create thread\n");
+		printf("Couldn't create printer thread\n");
+		return 1;
 	}
 
 	result = pthread_create(&analyzer_thread, NULL, process_data, NULL);
 	if(result != 0)
 	{
-		printf("Couldn't create thread\n");
+		printf("Couldn't create analyzer thread\n");
+		return 1;
 	}
 
 	pthread_join(printer_thread, NULL);
