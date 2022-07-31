@@ -4,6 +4,7 @@
 
 struct CoreData* old_core_data = NULL;
 struct CoreData* new_core_data = NULL;
+double* averagesStored;
 
 void* process_data(void* arg)
 {
@@ -30,8 +31,6 @@ void* process_data(void* arg)
     int refresh_rate; //how many refreshes per second
 
     double average;
-
-    int* averagesStored; //storage for final calculation
 
     sleep(2); //wait to make sure we have an appropriate number of cores
 
@@ -134,7 +133,7 @@ void* process_data(void* arg)
 
             average = average / (double)refresh_rate;
 
-            printf("CPU core: %lu, usage: %f%%\n", i, average);
+            //printf("CPU core: %lu, usage: %f%%\n", i, average);
 
             averagesStored[i] = average;
 
@@ -151,4 +150,9 @@ void* process_data(void* arg)
 
         usleep(1000000 / refresh_rate);
     }
+}
+
+double* retrieve_data()
+{
+    return averagesStored;
 }
