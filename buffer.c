@@ -50,7 +50,14 @@ void save_to_buffer(struct CoreData data)
 
 struct CoreData* load_from_buffer(void)
 {
-    return cores;
+    if(cores != NULL)
+    {
+        return cores;
+    }
+    else
+    {
+        return NULL;
+    }
 }
 
 unsigned long get_num_cores(void)

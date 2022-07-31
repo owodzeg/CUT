@@ -35,12 +35,10 @@ void* process_data(void* arg)
 
     struct timespec t;
 
-    t.tv_sec = 0;
-    t.tv_nsec = 500000000L;
-    nanosleep(&t, NULL); // need to wait for reader to get number of cores
+    //sleep(1);
 
     refresh_rate = 10;
-    numcores = get_num_cores();
+    numcores = sysconf(_SC_NPROCESSORS_ONLN);
 
     percentagesStored = malloc(sizeof(int*) * numcores);
     if(!percentagesStored)
@@ -80,77 +78,80 @@ void* process_data(void* arg)
     {
         tmp = load_from_buffer();
         
-        for(unsigned long i=0; i<numcores; i++)
+        if(tmp != NULL)
         {
-            new_core_data[i].core_id = tmp[i].core_id;
-            new_core_data[i].user = tmp[i].user;
-            new_core_data[i].nice = tmp[i].nice;
-            new_core_data[i].system = tmp[i].system;
-            new_core_data[i].idle = tmp[i].idle;
-            new_core_data[i].iowait = tmp[i].iowait;
-            new_core_data[i].irq = tmp[i].irq;
-            new_core_data[i].softirq = tmp[i].softirq;
-            new_core_data[i].steal = tmp[i].steal;
-        
-            // logic
-            //printf("core %lu user %ld vs %ld\n", i+1, new_core_data[i].user, old_core_data[i].user);
-
-            prevIdle = old_core_data[i].idle + old_core_data[i].iowait;
-            curIdle = new_core_data[i].idle + new_core_data[i].iowait;
-
-            prevNonIdle = old_core_data[i].user + old_core_data[i].nice + old_core_data[i].system + old_core_data[i].irq + old_core_data[i].softirq + old_core_data[i].steal;
-            curNonIdle = new_core_data[i].user + new_core_data[i].nice + new_core_data[i].system + new_core_data[i].irq + new_core_data[i].softirq + new_core_data[i].steal;
-
-            prevTotal = prevIdle + prevNonIdle;
-            curTotal = curIdle + curNonIdle;
-
-            totalDiff = curTotal - prevTotal;
-            idleDiff = curIdle - prevIdle;
-
-            //printf("totalDiff: %ld, idleDiff: %d", totalDiff, idleDiff);
-
-            if(totalDiff > 0)
+            for(unsigned long i=0; i<numcores; i++)
             {
-                percentage = (double)(totalDiff - idleDiff) / (double)totalDiff * 100.0;
+                new_core_data[i].core_id = tmp[i].core_id;
+                new_core_data[i].user = tmp[i].user;
+                new_core_data[i].nice = tmp[i].nice;
+                new_core_data[i].system = tmp[i].system;
+                new_core_data[i].idle = tmp[i].idle;
+                new_core_data[i].iowait = tmp[i].iowait;
+                new_core_data[i].irq = tmp[i].irq;
+                new_core_data[i].softirq = tmp[i].softirq;
+                new_core_data[i].steal = tmp[i].steal;
+            
+                // logic
+                //printf("core %lu user %ld vs %ld\n", i+1, new_core_data[i].user, old_core_data[i].user);
+
+                prevIdle = old_core_data[i].idle + old_core_data[i].iowait;
+                curIdle = new_core_data[i].idle + new_core_data[i].iowait;
+
+                prevNonIdle = old_core_data[i].user + old_core_data[i].nice + old_core_data[i].system + old_core_data[i].irq + old_core_data[i].softirq + old_core_data[i].steal;
+                curNonIdle = new_core_data[i].user + new_core_data[i].nice + new_core_data[i].system + new_core_data[i].irq + new_core_data[i].softirq + new_core_data[i].steal;
+
+                prevTotal = prevIdle + prevNonIdle;
+                curTotal = curIdle + curNonIdle;
+
+                totalDiff = curTotal - prevTotal;
+                idleDiff = curIdle - prevIdle;
+
+                //printf("totalDiff: %ld, idleDiff: %d", totalDiff, idleDiff);
+
+                if(totalDiff > 0)
+                {
+                    percentage = (double)(totalDiff - idleDiff) / (double)totalDiff * 100.0;
+                }
+                else
+                {
+                    percentage = 0;
+                }
+
+                //printf("Percentage: %f", percentage);
+
+                for(int r=0; r<refresh_rate-1; r++)
+                {
+                    percentagesStored[i][r] = percentagesStored[i][r+1];
+                }
+
+                percentagesStored[i][refresh_rate-1] = percentage;
+
+                average = 0.0;
+
+                for(int r=0; r<refresh_rate; r++)
+                {
+                    average += percentagesStored[i][r];
+                }
+
+                //printf("Average value: %f", average);
+
+                average = average / (double)refresh_rate;
+
+                //printf("CPU core: %lu, usage: %f%%\n", i, average);
+
+                averagesStored[i] = average;
+
+                old_core_data[i].core_id = new_core_data[i].core_id;
+                old_core_data[i].user = new_core_data[i].user;
+                old_core_data[i].nice = new_core_data[i].nice;
+                old_core_data[i].system = new_core_data[i].system;
+                old_core_data[i].idle = new_core_data[i].idle;
+                old_core_data[i].iowait = new_core_data[i].iowait;
+                old_core_data[i].irq = new_core_data[i].irq;
+                old_core_data[i].softirq = new_core_data[i].softirq;
+                old_core_data[i].steal = new_core_data[i].steal;
             }
-            else
-            {
-                percentage = 0;
-            }
-
-            //printf("Percentage: %f", percentage);
-
-            for(int r=0; r<refresh_rate-1; r++)
-            {
-                percentagesStored[i][r] = percentagesStored[i][r+1];
-            }
-
-            percentagesStored[i][refresh_rate-1] = percentage;
-
-            average = 0.0;
-
-            for(int r=0; r<refresh_rate; r++)
-            {
-                average += percentagesStored[i][r];
-            }
-
-            //printf("Average value: %f", average);
-
-            average = average / (double)refresh_rate;
-
-            //printf("CPU core: %lu, usage: %f%%\n", i, average);
-
-            averagesStored[i] = average;
-
-            old_core_data[i].core_id = new_core_data[i].core_id;
-            old_core_data[i].user = new_core_data[i].user;
-            old_core_data[i].nice = new_core_data[i].nice;
-            old_core_data[i].system = new_core_data[i].system;
-            old_core_data[i].idle = new_core_data[i].idle;
-            old_core_data[i].iowait = new_core_data[i].iowait;
-            old_core_data[i].irq = new_core_data[i].irq;
-            old_core_data[i].softirq = new_core_data[i].softirq;
-            old_core_data[i].steal = new_core_data[i].steal;
         }
 
         t.tv_sec = 0;

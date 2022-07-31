@@ -13,14 +13,15 @@ void *print_data(void* arg)
 
     struct timespec t;
 
-    sleep(1); //need to wait for reader and analyzer to kick in
+    numcores = sysconf(_SC_NPROCESSORS_ONLN);
+
+    //sleep(1);
 
     initscr();
 
     for(;;)
     {
         analyzerData = retrieve_data();
-        numcores = get_num_cores();
         
         mvprintw(0, 0, "CORE ID    USAGE");
 
