@@ -7,10 +7,7 @@ struct CoreData* new_core_data = NULL;
 
 void* process_data(void* arg)
 {
-    sleep(2);
-
-    unsigned long numcores = 0;
-    numcores = get_num_cores();
+    unsigned long numcores;
     
     struct CoreData* tmp;
 
@@ -27,6 +24,10 @@ void* process_data(void* arg)
     long int idleDiff;
 
     double percentage;
+
+    sleep(2);
+
+    numcores = get_num_cores();
 
     if(old_core_data == NULL)
         old_core_data = malloc(sizeof(struct CoreData) * numcores);
@@ -67,7 +68,7 @@ void* process_data(void* arg)
 
             percentage = (double)(totalDiff - idleDiff) / (double)totalDiff * 100.0;
 
-            printf("CPU core: %lu, usage: %f%%, totald: %ld, idled: %ld\n", i, percentage, totald, idled);
+            printf("CPU core: %lu, usage: %f%%, totalDiff: %ld, idleDiff: %ld\n", i, percentage, totalDiff, idleDiff);
 
             old_core_data[i].core_id = new_core_data[i].core_id;
             old_core_data[i].user = new_core_data[i].user;
