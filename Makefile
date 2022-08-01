@@ -33,6 +33,10 @@ printer.o: printer.c printer.h
 clean:
 	rm -rf *.o
 	rm -rf ./main
+	rm -rf ./test
 
-test:
-	@echo TODO: there will be some unit testing here
+test: test.o reader.o analyzer.o buffer.o printer.o
+	${CC} ${CFLAGS} -o test test.o reader.o analyzer.o buffer.o printer.o
+
+test.o: test.c
+	${CC} ${CFLAGS} -c test.c
