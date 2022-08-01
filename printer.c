@@ -22,6 +22,7 @@ void *print_data(void* arg)
 
     for(;;)
     {
+        pthread_mutex_lock(&analyzer_mutex);
         analyzerData = retrieve_data();
 
         if(analyzerData != NULL)
@@ -37,6 +38,7 @@ void *print_data(void* arg)
         {
             printf("Printer thread is waiting for data\n");
         }
+        pthread_mutex_unlock(&analyzer_mutex);
 
         t.tv_sec = 1;
         t.tv_nsec = 0;

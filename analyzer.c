@@ -72,7 +72,9 @@ void* process_data(void* arg)
         }
     }
 
+    pthread_mutex_lock(&analyzer_mutex);
     averagesStored = malloc(sizeof(double) * (unsigned long)numcores);
+    pthread_mutex_unlock(&analyzer_mutex);
 
     if(old_core_data == NULL)
         old_core_data = malloc(sizeof(struct CoreData) * (unsigned long)numcores);
@@ -82,7 +84,9 @@ void* process_data(void* arg)
 
     for(;;)
     {
+        pthread_mutex_lock(&buffer_mutex);
         tmp = load_from_buffer();
+        pthread_mutex_unlock(&buffer_mutex);
         
         if(tmp != NULL)
         {
@@ -146,7 +150,9 @@ void* process_data(void* arg)
 
                 //printf("CPU core: %lu, usage: %f%%\n", i, average);
 
+                pthread_mutex_lock(&analyzer_mutex);
                 averagesStored[i] = average;
+                pthread_mutex_unlock(&analyzer_mutex);
 
                 old_core_data[i].core_id = new_core_data[i].core_id;
                 old_core_data[i].user = new_core_data[i].user;

@@ -1,9 +1,12 @@
 #include "buffer.h"
+#include <pthread.h>
 #include <stdio.h>
 
 unsigned long old_cores;
 unsigned long max_cores;
 struct CoreData *cores = NULL;
+pthread_mutex_t buffer_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t analyzer_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 void save_to_buffer(struct CoreData data)
 {
@@ -13,6 +16,8 @@ void save_to_buffer(struct CoreData data)
 
     if(core_id+1 > max_cores)
     max_cores = core_id+1;
+    
+    pthread_mutex_lock(&buffer_mutex);
 
     if(cores == NULL)
     {
@@ -46,6 +51,8 @@ void save_to_buffer(struct CoreData data)
 
     //after cores is resized, i can safely store more data
     cores[core_id] = data;
+
+    pthread_mutex_unlock(&buffer_mutex);
 }
 
 struct CoreData* load_from_buffer(void)

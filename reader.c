@@ -66,7 +66,7 @@ void* read_proc(void* arg)
         fclose(fptr);
 
         t.tv_sec = 0;
-        t.tv_nsec = 500000000L;
+        t.tv_nsec = 50000000L;
         nanosleep(&t, NULL);
 
         if(reader_running == 0)

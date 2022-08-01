@@ -5,6 +5,7 @@
 #define BUFFER_H
 
 #include <stdlib.h>
+#include <pthread.h>
 
 // contain the necessary data of a single core
 // we differentiate cores so we can calculate per core % usage
@@ -27,6 +28,8 @@ extern unsigned long max_cores;
 
 // data storage
 extern struct CoreData *cores;
+extern pthread_mutex_t buffer_mutex;
+extern pthread_mutex_t analyzer_mutex;
 
 void save_to_buffer(struct CoreData data);
 struct CoreData* load_from_buffer(void);
