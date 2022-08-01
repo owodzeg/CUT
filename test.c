@@ -87,6 +87,7 @@ int main(int argc, char *argv[])
     numcores = (long)artificial_cores;
 
 	signal(SIGINT, quit_program);
+	signal(SIGTERM, quit_program);
 
 	result = pthread_create(&reader_thread, NULL, artificial_reader, NULL);
 	if(result != 0)

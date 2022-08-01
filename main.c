@@ -25,6 +25,7 @@ int main()
 	long numcores;
 
 	signal(SIGINT, quit_program);
+	signal(SIGTERM, quit_program);
 
     numcores = sysconf(_SC_NPROCESSORS_ONLN);
 
