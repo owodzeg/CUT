@@ -8,3 +8,11 @@ How to build:
     ./main
 
 You may modify Makefile to use a different compiler (clang or gcc)
+
+There is an additional testing binary to test various amount of CPU cores. During testing, artificial cores are created that send random data to the other threads.
+
+How to build:
+    git clone https://github.com/owodzeg/CUT.git
+    cd CUT
+    make test
+    ./test numOfCores
