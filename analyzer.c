@@ -44,7 +44,7 @@ void* process_data(void* arg)
     averagesStored = NULL;
 
     refresh_rate = 10;
-    numcores = sysconf(_SC_NPROCESSORS_ONLN);
+    numcores = *((long *) arg);
 
     percentagesStored = malloc(sizeof(double*) * (unsigned long)numcores);
     if(!percentagesStored)

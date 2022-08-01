@@ -2,6 +2,7 @@
 #include <pthread.h>
 #include <signal.h>
 #include <string.h>
+#include <unistd.h>
 #include "reader.h"
 #include "analyzer.h"
 #include "printer.h"
@@ -21,8 +22,11 @@ int main()
 	pthread_t analyzer_thread;
 	pthread_t printer_thread;
 	int result;
+	long numcores;
 
 	signal(SIGINT, quit_program);
+
+    numcores = sysconf(_SC_NPROCESSORS_ONLN);
 
 	result = pthread_create(&reader_thread, NULL, read_proc, NULL);
 	if(result != 0)
@@ -31,14 +35,14 @@ int main()
 		return 1;
 	}
 
-	result = pthread_create(&printer_thread, NULL, print_data, NULL);
+	result = pthread_create(&printer_thread, NULL, print_data, &numcores);
 	if(result != 0)
 	{
 		printf("Couldn't create printer thread\n");
 		return 1;
 	}
 
-	result = pthread_create(&analyzer_thread, NULL, process_data, NULL);
+	result = pthread_create(&analyzer_thread, NULL, process_data, &numcores);
 	if(result != 0)
 	{
 		printf("Couldn't create analyzer thread\n");

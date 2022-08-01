@@ -15,7 +15,7 @@ void *print_data(void* arg)
     struct timespec t;
 
     (void)arg; //to shut -wunused-parameter warning
-    numcores = sysconf(_SC_NPROCESSORS_ONLN);
+    numcores = *((long *) arg);
     printer_running = 1;
 
     //sleep(1);
